@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:to_do_list/constants/app_colors.dart';
 import 'package:to_do_list/data/model/task_model.dart';
-import 'package:to_do_list/screens/home/widegts/button_addnew.dart';
+import 'package:to_do_list/screens/all_tasks/all_task_screen.dart';
 import 'package:to_do_list/screens/home/widegts/header_item.dart';
 import 'package:to_do_list/screens/home/widegts/home_appbar.dart';
 import 'package:to_do_list/screens/home/widegts/progress_item.dart';
@@ -9,7 +9,6 @@ import 'package:to_do_list/screens/home/widegts/task_item.dart';
 
 import '../../data/model/task_priority.dart';
 import '../../data/model/task_status.dart';
-import '../create_new_task/create_new_task.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -23,9 +22,8 @@ class _HomeScreenState extends State<HomeScreen> {
     TaskModel(
       id: 1,
       name: 'Mobile App Research',
-      description:
-          'Mobile App Research :- Based on food app and see user '
-              'flow and find problem if any',
+      description: 'Mobile App Research :- Based on food app and see user '
+          'flow and find problem if any',
       startTime: DateTime.now(),
       endTime: DateTime.now(),
       date: DateTime.now(),
@@ -71,14 +69,32 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Column(
             children: [
-              HeaderItem(title: 'Progress'),
+              HeaderItem(
+                title: 'Progress',
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => AllTasksScreen(
+                            index: 0,
+                            tasks: [],
+                          )));
+                },
+              ),
               ProgressItem(
                 numberOfCompletedTask: tasks
                     .where((task) => task.taskStatus == TaskStatus.complete)
                     .length,
                 numberOfTask: tasks.length,
               ),
-              HeaderItem(title: "Today's Task"),
+              HeaderItem(
+                title: "Today's Task",
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => AllTasksScreen(
+                            index: 1,
+                            tasks: [],
+                          )));
+                },
+              ),
               Column(
                 children: tasks
                     .map(
@@ -102,15 +118,20 @@ class _HomeScreenState extends State<HomeScreen> {
                     )
                     .toList(),
               ),
-              HeaderItem(title: 'Tomorrow Task'),
+              HeaderItem(
+                title: "Tomorrow Task",
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => AllTasksScreen(
+                            index: 2,
+                            tasks: [],
+                          )));
+                },
+              ),
             ],
           ),
         ),
       ),
-      floatingActionButton: ButtonAddnew(onTap: () {
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => CreateNewTask()));
-      }),
     );
   }
 }

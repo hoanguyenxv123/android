@@ -3,8 +3,8 @@ import 'package:to_do_list/constants/app_colors.dart';
 import 'package:to_do_list/constants/app_icons.dart';
 
 class PrimaryAppbar extends StatelessWidget implements PreferredSizeWidget {
-  final String titel;
-  const PrimaryAppbar({super.key, required this.titel });
+  final String title;
+  const PrimaryAppbar({super.key, required this.title });
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class PrimaryAppbar extends StatelessWidget implements PreferredSizeWidget {
         ),
       ),
       title: Text(
-        titel,
+        title,
         style: TextStyle(
           color: Colors.white,
           fontSize: 25

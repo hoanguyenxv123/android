@@ -26,7 +26,7 @@ class _DetailedTaskState extends State<DetailedTask> {
     return Scaffold(
       backgroundColor: AppColors.hex020206,
       appBar: PrimaryAppbar(
-        titel: widget.taskModel.name,
+        title: widget.taskModel.name,
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),

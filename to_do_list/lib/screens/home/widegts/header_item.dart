@@ -3,7 +3,8 @@ import 'package:to_do_list/constants/app_colors.dart';
 
 class HeaderItem extends StatelessWidget {
   final String title;
-  const HeaderItem({super.key, required this.title});
+  final VoidCallback? onPressed;
+  const HeaderItem({super.key, required this.title, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +23,7 @@ class HeaderItem extends StatelessWidget {
             padding: EdgeInsets.zero,
             minimumSize: Size.zero
           ),
-            onPressed: (){},
+            onPressed: onPressed,
             child: Text('See All',style: TextStyle(
               fontSize: 16,
               color: AppColors.hexBA83DE

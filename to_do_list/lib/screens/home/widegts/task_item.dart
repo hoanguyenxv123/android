@@ -27,50 +27,55 @@ class TaskItem extends StatelessWidget {
           Container(
             width: 15,
             decoration: BoxDecoration(
-                color: taskModel.priority.color,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(10),
-                  bottomLeft: Radius.circular(10),
-                )),
+              color: taskModel.priority.color,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10),
+                bottomLeft: Radius.circular(10),
+              ),
+            ),
           ),
-          SizedBox(
-            width: 20,
-          ),
+          SizedBox(width: 20),
+
           Expanded(
-              child: GestureDetector(
-                onTap: (){
-                  Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (context)
-                          => DetailedTask(taskModel: taskModel)
-                      )
-                  );
-                },
+            child: GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => DetailedTask(taskModel: taskModel),
+                  ),
+                );
+              },
+              child: Container( // Bọc bên trong với Container để làm vùng nhấn rộng hơn
+                padding: EdgeInsets.all(10),  // Thêm khoảng đệm nếu cần
                 child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                Text(
-                  taskModel.name,
-                  style: TextStyle(color: Colors.white, fontSize: 16),
-                ),
-                SizedBox(height: 5,),
-                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.asset(
-                      AppIcons.calendar,
-                      width: 18,
+                    Text(
+                      taskModel.name,
+                      style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
-                    SizedBox(
-                      width: 10,
+                    SizedBox(height: 5),
+                    Row(
+                      children: [
+                        Image.asset(
+                          AppIcons.calendar,
+                          width: 18,
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                          taskModel.displayDate,
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        ),
+                      ],
                     ),
-                    Text(taskModel.displayDate,
-                        style: TextStyle(color: Colors.white, fontSize: 16))
                   ],
-                )
-                            ],
-                          ),
-              )),
+                ),
+              ),
+            ),
+          ),
+
+          // GestureDetector cho icon trạng thái
           GestureDetector(
             onTap: () {
               if (taskModel.taskStatus == TaskStatus.incomplete) {
@@ -81,11 +86,15 @@ class TaskItem extends StatelessWidget {
             },
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Image.asset(taskModel.taskStatus.icon,width: 26,height: 26,),
+              child: Image.asset(
+                taskModel.taskStatus.icon,
+                width: 26,
+                height: 26,
+              ),
             ),
-          )
+          ),
         ],
-      ),
+      )
     );
   }
 }

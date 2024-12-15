@@ -24,7 +24,7 @@ class _CreateNewTaskState extends State<CreateNewTask> {
     return Scaffold(
       backgroundColor: AppColors.hex020206,
       appBar: PrimaryAppbar(
-          titel: 'Create new task',
+          title: 'Create new task',
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
