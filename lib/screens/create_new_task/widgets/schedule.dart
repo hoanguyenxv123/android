@@ -10,14 +10,14 @@ class Schedule extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Schedule',style: TextStyle(
-            color: Colors.white,
-            fontSize: 22
-        ),),
+        // Text('Schedule',style: TextStyle(
+        //     color: Colors.white,
+        //     fontSize: 22
+        // ),),
         SizedBox(height: 20,),
-        TextData(hintText: 'Name'),
+        // TextData(hintText: 'Title', controller: null,),
         SizedBox(height: 20,),
-        TextData(hintText: 'Description',isMultiline: true,height: 120,),
+        // TextData(hintText: 'Description',isMultiline: true,height: 120, controller: null,),
       ],
     );
   }

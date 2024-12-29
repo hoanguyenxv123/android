@@ -18,9 +18,9 @@ class Schedule extends StatelessWidget {
             fontSize: 22
         ),),
         SizedBox(height: 20,),
-        TextData(hintText: 'Name',initialValue: name,),
+        // TextData(hintText: 'Name',initialValue: name,),
         SizedBox(height: 20,),
-        TextData(hintText: 'Description',isMultiline: true,height: 120,initialValue: description,),
+        // TextData(hintText: 'Description',isMultiline: true,height: 120,initialValue: description,),
       ],
     );
   }
