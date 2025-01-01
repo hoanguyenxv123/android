@@ -7,20 +7,26 @@ import '../../../common_widegts/text_data.dart';
 import '../data/data_sources/todo_services.dart';
 
 class CrudScreen extends StatefulWidget {
-  final bool isEdit; // Xác định chế độ Create hay Edit
+  final bool isEdit;
   final String? initialTitle;
   final String? initialDescription;
+  final String? todoId; // Thêm tham số id
+  final Future<void> Function()? onDelete;
+
 
   const CrudScreen({
     super.key,
     this.isEdit = false,
     this.initialTitle,
     this.initialDescription,
+    this.todoId,
+    this.onDelete,
   });
 
   @override
   State<CrudScreen> createState() => _CrudScreenState();
 }
+
 
 class _CrudScreenState extends State<CrudScreen> {
   final TextEditingController _titleController = TextEditingController();
@@ -81,26 +87,35 @@ class _CrudScreenState extends State<CrudScreen> {
             ),
             SizedBox(height: 32),
             SecondButton(
-                title: widget.isEdit ? 'Edit Todo' : 'Create Todo',
-                onTap: () {
-                  if (!widget.isEdit) {
-                    final newTitle = _titleController.text;
-                    final newDescription = _descriptionController.text;
-                    if (newTitle.isNotEmpty && newDescription.isNotEmpty) {
-                      Navigator.pop(context, {
-                        'title': newTitle,
-                        'description': newDescription,
-                      });
-                    }
+              title: widget.isEdit ? 'Edit Todo' : 'Create Todo',
+              onTap: () async {
+                final newTitle = _titleController.text;
+                final newDescription = _descriptionController.text;
+                if (newTitle.isNotEmpty && newDescription.isNotEmpty) {
+                  if (widget.isEdit) {
+                    // Gọi hàm cập nhật Todo từ TodosScreen
+                    Navigator.pop(context, {
+                      'id': widget.todoId,
+                      'title': newTitle,
+                      'description': newDescription,
+                    });
+                  } else {
+                    Navigator.pop(context, {
+                      'title': newTitle,
+                      'description': newDescription,
+                    });
                   }
                 }
+              },
             ),
+
             if (widget.isEdit) ...[
               SizedBox(height: 16),
               OutlinedButton(
-                onPressed: () {
-                  // Xử lý xóa Todo
-                  print('Delete Todo');
+                onPressed: ()async {
+                  if (widget.onDelete != null) {
+                    await widget.onDelete!(); // Gọi callback xóa
+                  }
                 },
                 style: OutlinedButton.styleFrom(
                   shape: RoundedRectangleBorder(

@@ -16,7 +16,7 @@ class TodoModel {
   });
 
   factory TodoModel.fromJson(Map<String, dynamic> json) => TodoModel(
-    id: json['id'] ?? '',
+    id: json['_id'] ?? '',
     title: json['title'] ?? '',
     description: json['description'] ?? '',
     isCompleted: json['is_completed'] ?? false,
@@ -37,4 +37,8 @@ class TodoModel {
     "created_at": createdAt.toIso8601String(),
     "updated_at": updatedAt.toIso8601String(),
   };
+  @override
+  String toString() {
+    return 'TodoModel{id: $id, title: $title, description: $description, isCompleted: $isCompleted, createdAt: $createdAt, updatedAt: $updatedAt}';
+  }
 }

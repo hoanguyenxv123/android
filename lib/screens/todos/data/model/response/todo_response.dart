@@ -7,32 +7,36 @@ class TodoResponse {
   int? timestamp;
   String message;
   List<TodoModel> items;
-  MetaModel? data;
+  MetaModel? meta;
+  TodoModel? data;
 
   TodoResponse({
-    required this.code,
+    this.code, // Optional because the API might return null
     required this.success,
-    required this.timestamp,
+    this.timestamp, // Optional since it can be null
     required this.message,
     required this.items,
-    required this.data,
+    this.data, // Optional because it might not be provided
+    this.meta, // Optional, based on the API response
   });
 
-  factory TodoResponse.fromJson(Map<String, dynamic> json) => TodoResponse(
-    code: json["code"] ?? 0,
-    success: json["success"] ?? false,
-    timestamp: (json["timestamp"] != null && json["timestamp"] is int)
-        ? json["timestamp"]
-        : 0, // Kiểm tra kiểu dữ liệu của timestamp
-    message: json["message"] ?? '',
-    items: json["items"] != null
-        ? List<TodoModel>.from(
-        json["items"].map((x) => TodoModel.fromJson(x)))
-        : [],
-    data: json["data"] != null
-        ? MetaModel.fromJson(json["data"])
-        : null,
-  );
+  factory TodoResponse.fromJson(Map<String, dynamic> json) {
+    return TodoResponse(
+      code: json["code"] ?? 0,
+      success: json["success"] ?? false,
+      timestamp: json["timestamp"], // Handle timestamp, allow null
+      message: json["message"] ?? '',
+      items: json["items"] != null
+          ? List<TodoModel>.from(json["items"].map((x) => TodoModel.fromJson(x)))
+          : [],
+      data: json["data"] != null
+          ? TodoModel.fromJson(json["data"]) // Corrected this part (should be TodoModel, not MetaModel)
+          : null,
+      meta: json["meta"] != null
+          ? MetaModel.fromJson(json["meta"]) // Corrected to handle meta
+          : null,
+    );
+  }
 
   Map<String, dynamic> toJson() => {
     "code": code,
@@ -41,5 +45,6 @@ class TodoResponse {
     "message": message,
     "items": List<dynamic>.from(items.map((x) => x.toJson())),
     "data": data?.toJson(),
+    "meta": meta?.toJson(), // Include meta if available
   };
 }

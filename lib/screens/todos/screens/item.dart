@@ -9,12 +9,13 @@ class Item extends StatefulWidget {
   final String time;
   final bool isCompleted;
   final VoidCallback onTap;
+  final VoidCallback? onTap1;
   const Item(
       {super.key,
       required this.title,
       required this.description,
       required this.time,
-      required this.isCompleted, required this.onTap});
+      required this.isCompleted, required this.onTap, this.onTap1});
 
   @override
   State<Item> createState() => _ItemState();
@@ -87,9 +88,7 @@ class _ItemState extends State<Item> {
                 ],
               ),
               GestureDetector(
-                onTap: () {
-                  setState(() {});
-                },
+                onTap: widget.onTap1,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Image.asset(

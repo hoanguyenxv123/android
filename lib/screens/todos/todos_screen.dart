@@ -26,10 +26,10 @@ class _TodosScreenState extends State<TodosScreen> {
   @override
   void initState() {
     fetchTodos();
-    print(todos);
     super.initState();
   }
 
+  /// Load dữ liệu
   Future<void> fetchTodos() async {
     final request = GetTodoRequest(
       page: 1,
@@ -40,6 +40,7 @@ class _TodosScreenState extends State<TodosScreen> {
     });
     try {
       final data = await todoServices.getTodo(request);
+      debugPrint('Data $data');
       setState(() {
         todos = data ?? [];
       });
@@ -52,13 +53,13 @@ class _TodosScreenState extends State<TodosScreen> {
     }
   }
 
-  /// Lấy danh sách
-  Future<void> getTodos() async {
-    final request = GetTodoRequest(
-      page: 1,
-      limit: 10,
-    );
-    final todos = await todoServices.getTodo(request);
+  /// Detail
+  Future<void> getTodoId(String id) async {
+    try {
+      final data = await todoServices.getTodoId(id);
+    } catch (e) {
+      debugPrint('Error detail todo : $e');
+    }
   }
 
   /// Thêm mới
@@ -88,9 +89,55 @@ class _TodosScreenState extends State<TodosScreen> {
             updatedAt: newTodo.updatedAt,
           ));
         });
+        debugPrint('Current Todos List: $todos');
       }
     } catch (e) {
       debugPrint('Error creating todo: $e');
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  /// Cập nhật Todo
+  Future<void> updateTodo(
+      String id, String title, String description, bool isCompleted) async {
+    final request = CreateTodoRequest(
+      title: title,
+      description: description,
+      isCompleted: isCompleted,
+    );
+
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      // Gọi API cập nhật Todo
+      final todoResponse = await todoServices.updateTodo(id, request);
+
+      if (todoResponse.success) {
+        setState(() {
+          final index = todos.indexWhere((todo) => todo.id == id);
+          if (index != -1) {
+            todos[index] = TodoModel(
+              id: id,
+              title: title,
+              description: description,
+              isCompleted: isCompleted,
+              createdAt: todos[index].createdAt,
+              // Giữ nguyên ngày tạo
+              updatedAt: DateTime.now(), // Cập nhật ngày sửa
+            );
+          }
+        });
+        debugPrint('Todo updated successfully: $id');
+      } else {
+        debugPrint('Failed to update todo: ${todoResponse.message}');
+      }
+    } catch (e) {
+      debugPrint('Error updating todo: $e');
     } finally {
       setState(() {
         isLoading = false;
@@ -149,7 +196,6 @@ class _TodosScreenState extends State<TodosScreen> {
                     final todo = todos[index];
                     return Item(
                       onTap: () {
-                        print('Selected Todo ID: ${todo.id}');
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -157,14 +203,44 @@ class _TodosScreenState extends State<TodosScreen> {
                               isEdit: true,
                               initialTitle: todo.title,
                               initialDescription: todo.description,
+                              todoId: todo.id,
+                              // Truyền ID của Todo
+                              onDelete: () async {
+                                await deleteTodo(todo.id); // Gọi hàm deleteTodo
+                                fetchTodos();
+                                debugPrint(
+                                    'Xóa thành công'); // Làm mới danh sách sau khi xóa
+                                Navigator.pop(
+                                    context); // Quay lại màn hình trước
+                              },
                             ),
                           ),
-                        );
+                        ).then((result) {
+                          if (result != null) {
+                            // Nếu có kết quả trả về từ CrudScreen, cập nhật Todo
+                            updateTodo(
+                              result['id']!,
+                              result['title']!,
+                              result['description']!,
+                              false, // Hoặc true nếu bạn muốn cập nhật trạng thái hoàn thành
+                            );
+                          }
+                        });
                       },
                       title: todo.title,
                       description: todo.description,
                       isCompleted: todo.isCompleted,
                       time: todo.updatedAt.toString() ?? '',
+                      onTap1: () {
+                        setState(() {
+                          updateTodo(
+                            todo.id,
+                            todo.title,
+                            todo.description,
+                            !todo.isCompleted,
+                          );
+                        });
+                      },
                     );
                   },
                 )
@@ -194,20 +270,19 @@ class _TodosScreenState extends State<TodosScreen> {
                   ),
                 ),
       floatingActionButton: ButtonAddnew(
-        onTap: () {
-          Navigator.push<Map<String, String>>(
+        onTap: () async {
+          final result = await Navigator.push<Map<String, String>>(
             context,
             MaterialPageRoute(
               builder: (context) => CrudScreen(),
             ),
-          ).then((result) {
-            if (result != null) {
-              // Thêm Todo mới vào danh sách
-              setState(() {
-                createTodo(result['title']!, result['description']!);
-              });
-            }
-          });
+          );
+
+          if (result != null) {
+            // Thêm Todo mới vào danh sách và gọi lại fetchTodos để cập nhật dữ liệu
+            await createTodo(result['title']!, result['description']!);
+            fetchTodos();
+          }
         },
       ),
     );
